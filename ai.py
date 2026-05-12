@@ -62,11 +62,40 @@ def safe_parse_json(ai_result):
     except Exception as e:
         st.error(f"Could not parse AI output as JSON. Error: {e}")
         return {}
+    
+    st.set_page_config(
+    page_title="AccrediAI - Institutional Intelligence System",
+    page_icon="🎓",
+    layout="wide"
+)
 
 # =========================================================
 # Streamlit UI
 # =========================================================
-st.title("AccrediAI")
+
+st.markdown("""
+<style>
+.main { background: linear-gradient(to right, #eef2ff, #f8fafc); }
+.stApp { background-color: #f4f7fb; }
+.main-title { font-size: 48px; font-weight: 800; text-align: center; color: #1e3a8a; margin-bottom: 10px; }
+.sub-title { text-align: center; font-size: 20px; color: #475569; margin-bottom: 40px; }
+.upload-box { padding: 25px; border-radius: 20px; background: white; box-shadow: 0px 4px 20px rgba(0,0,0,0.08); margin-bottom: 25px; }
+.metric-card { background: white; padding: 20px; border-radius: 18px; text-align: center; box-shadow: 0px 4px 18px rgba(0,0,0,0.08); transition: 0.3s; }
+.metric-card:hover { transform: translateY(-5px); }
+.metric-title { font-size: 18px; color: #475569; font-weight: 600; }
+.metric-value { font-size: 38px; font-weight: bold; color: #2563eb; }
+.summary-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0px 4px 18px rgba(0,0,0,0.08); margin-top: 20px; }
+.section-heading { font-size: 28px; font-weight: bold; color: #1e293b; margin-bottom: 15px; }
+.footer { text-align: center; margin-top: 40px; color: gray; font-size: 15px; }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="main-title">🎓 AccrediAI</div>
+<div class="sub-title">AI-Powered Institutional Accreditation & Performance Intelligence System</div>
+""", unsafe_allow_html=True)
+
+
 
 uploaded_file = st.file_uploader("Upload SSR/SST PDF", type=["pdf"])
 
@@ -157,6 +186,25 @@ if uploaded_file:
 
     st.success(f"✅ Final Approval Percentage: {total_percentage:.2f}%")
 
+    st.markdown("## 📈 AI Analytics Visualization")
+    df = pd.DataFrame({
+        "Metric": ["Faculty", "Infrastructure", "Documents", "Innovation"],
+        "Score": [faculty_percentage, infrastructure_percentage, document_percentage, other_percentage]
+    })
+
+    colA, colB = st.columns(2)
+    with colA:
+        fig, ax = plt.subplots(figsize=(6,4))
+        ax.bar(df["Metric"], df["Score"], color="#6a0dad")
+        ax.set_ylim(0,100)
+        ax.set_ylabel("Performance %")
+        st.pyplot(fig)
+
+    with colB:
+        fig2, ax2 = plt.subplots(figsize=(6,4))
+        ax2.pie(df["Score"], labels=df["Metric"], autopct='%1.1f%%')
+        st.pyplot(fig2)
+
     # =========================
     # Summary Boxes
     # =========================
@@ -201,3 +249,9 @@ if uploaded_file:
             <p>{overall_summary}</p>
         </div>
     """, unsafe_allow_html=True)
+
+
+
+st.markdown("""
+<div class="footer">🚀 Powered by Gemini AI | Built for AICTE & UGC Institutional Intelligence</div>
+""", unsafe_allow_html=True)
